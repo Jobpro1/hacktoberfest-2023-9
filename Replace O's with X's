@@ -1,0 +1,65 @@
+Given a matrix mat of size N x M where every element is either 'O' or 'X'. Replace all 'O' or a group of 'O' with 'X' that are surrounded by 'X'.
+
+A 'O' (or a set of 'O') is considered to be surrounded by 'X' if there are 'X' at locations just below, just above, just left and just right of it.
+
+Example 1:
+
+Input: 
+n = 5, m = 4
+mat = {{'X', 'X', 'X', 'X'}, 
+       {'X', 'O', 'X', 'X'}, 
+       {'X', 'O', 'O', 'X'}, 
+       {'X', 'O', 'X', 'X'}, 
+       {'X', 'X', 'O', 'O'}}
+Output: 
+ans = {{'X', 'X', 'X', 'X'}, 
+       {'X', 'X', 'X', 'X'}, 
+       {'X', 'X', 'X', 'X'}, 
+       {'X', 'X', 'X', 'X'}, 
+       {'X', 'X', 'O', 'O'}}
+Explanation: 
+Following the rule the above matrix is the resultant matrix. 
+
+
+
+def capture(mat):
+    if not mat:
+        return mat
+
+    n = len(mat)
+    m = len(mat[0])
+
+    def dfs(x, y):
+        if x < 0 or x >= n or y < 0 or y >= m or mat[x][y] != 'O':
+            return
+        mat[x][y] = 'X'
+        for dx, dy in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
+            dfs(x + dx, y + dy)
+
+    # Capture 'O' cells on the border
+    for i in range(n):
+        if mat[i][0] == 'O':
+            dfs(i, 0)
+        if mat[i][m - 1] == 'O':
+            dfs(i, m - 1)
+    for j in range(m):
+        if mat[0][j] == 'O':
+            dfs(0, j)
+        if mat[n - 1][j] == 'O':
+            dfs(n - 1, j)
+
+    # Capture 'O' cells in the middle
+    for i in range(1, n - 1):
+        for j in range(1, m - 1):
+            if mat[i][j] == 'O':
+                dfs(i, j)
+
+# Example usage
+mat = [['X', 'X', 'X', 'X'],
+       ['X', 'O', 'X', 'X'],
+       ['X', 'O', 'O', 'X'],
+       ['X', 'O', 'X', 'X'],
+       ['X', 'X', 'O', 'O']]
+capture(mat)
+for row in mat:
+    print(row)
